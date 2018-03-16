@@ -1,0 +1,36 @@
+apiVersion: 0.1.0
+kind: ksonnet.io/app
+libraries:
+  core:
+    gitVersion:
+      commitSha: 466cde45766b2370d7480d35e5ccda6c813832a1
+      refSpec: master
+    name: core
+    registry: kubeflow
+  tf-job:
+    gitVersion:
+      commitSha: 466cde45766b2370d7480d35e5ccda6c813832a1
+      refSpec: master
+    name: tf-job
+    registry: kubeflow
+  tf-serving:
+    gitVersion:
+      commitSha: 466cde45766b2370d7480d35e5ccda6c813832a1
+      refSpec: master
+    name: tf-serving
+    registry: kubeflow
+name: ks-kubeflow
+registries:
+  incubator:
+    gitVersion:
+      commitSha: 40285d8a14f1ac5787e405e1023cf0c07f6aa28c
+      refSpec: master
+    protocol: github
+    uri: github.com/ksonnet/parts/tree/master/incubator
+  kubeflow:
+    gitVersion:
+      commitSha: 466cde45766b2370d7480d35e5ccda6c813832a1
+      refSpec: master
+    protocol: github
+    uri: github.com/kubeflow/kubeflow/tree/master/kubeflow
+version: 0.0.1
