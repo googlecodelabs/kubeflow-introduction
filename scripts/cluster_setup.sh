@@ -17,6 +17,9 @@ PROJECT_ID=     #YOUR GCP PROJECT ID HERE
 ZONE=us-central1-a
 CLUSTER_NAME=kubeflow-codelab
 
+# move to the ksonnet directory
+cd "$( dirname "${BASH_SOURCE[0]}"  )"
+
 # set config
 gcloud config set project $PROJECT_ID
 gcloud config set compute/zone $ZONE
@@ -29,8 +32,12 @@ kubectl create namespace kubeflow
 kubectl config set-context $(kubectl config current-context) --namespace=kubeflow
 # fix rbac issue
 kubectl create clusterrolebinding default-admin --clusterrole=cluster-admin --user=$(gcloud config get-value account)
-# add ks environment pointing to cluster
-cd ks-kubeflow
-ks env add cloud
-# apply kubeflow resources to cluster
-ks apply cloud -c kubeflow-core
+
+# add ksonnet to the cluster if available
+if [ -d "ksonnet-kubeflow" ]; then
+    cd ksonnet-kubeflow
+    # add ks environment pointing to cluster
+    ks env add cloud
+    # apply kubeflow resources to cluster
+    ks apply cloud -c kubeflow-core
+fi

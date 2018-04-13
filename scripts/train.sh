@@ -17,27 +17,30 @@ PROJECT_ID=     #YOUR GCP PROJECT ID HERE
 GCS_BUCKET=     #YOUR GCS BUCKET HERE
 KF_ENV=cloud
 
-REGISTRY_PATH=us.gcr.io/$PROJECT_ID/tf-webui
+TIMESTAMP=$(date +%s)
+REGISTRY_PATH=us.gcr.io/$PROJECT_ID/tf-train:$TIMESTAMP
+
+# move to the main project directory
+cd "$( dirname "${BASH_SOURCE[0]}"  )"
+cd ..
 
 # build a container from our local code
 echo "Building container..."
-docker build -t $REGISTRY_PATH ./web-ui
+docker build -t $REGISTRY_PATH ./tensorflow-model --build-arg version=$TIMESTAMP --build-arg bucket=$GCS_BUCKET
 
 # push to GCR
 echo "Pushing container..."
 gcloud docker -- push $REGISTRY_PATH
 
-# delete old deployments, so container is updated
-kubectl delete deployment web-ui
-kubectl delete deployment server
+if [ -d "ksonnet-kubeflow" ]; then
+    # push job to cluster
+    cd ksonnet-kubeflow
+    kubectl delete tfjobs --all
+    ks param set train image $REGISTRY_PATH
+    ks param set train name "train-"$TIMESTAMP
+    ks apply $KF_ENV -c train
 
-# apply the server/ui components to the cluster
-cd ks-kubeflow
-ks param set server modelPath gs://$GCS_BUCKET
-ks apply $KF_ENV -c server
-ks param set web-ui image $REGISTRY_PATH
-ks apply $KF_ENV -c web-ui -n kubeflow
-
-# reset parameters
-ks param set server modelPath null
-ks param set web-ui image null
+    # reset parameters
+    ks param set train image null
+    ks param set train name "train"
+fi
