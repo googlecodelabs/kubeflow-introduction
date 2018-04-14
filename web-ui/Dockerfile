@@ -27,14 +27,8 @@ RUN pip --no-cache-dir install \
         Pillow \
         h5py \
         ipykernel \
-        jupyter \
-        matplotlib \
         numpy \
-        pandas \
-        scipy \
-        sklearn \
         tensorflow \
-        pudb \
         tensorflow-serving-api \
         flask \
         && \
