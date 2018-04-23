@@ -30,11 +30,11 @@ tf.app.flags.DEFINE_string('version', '1',
                            'model version')
 tf.app.flags.DEFINE_string('bucket', None,
                            'name of the GCS bucket')
-tf.app.flags.DEFINE_integer('epochs', 10000,
+tf.app.flags.DEFINE_integer('steps', 2000,
                             'number of runs through entire training set')
 arg_version = tf.app.flags.FLAGS.version
 arg_bucket = tf.app.flags.FLAGS.bucket
-arg_epochs = tf.app.flags.FLAGS.epochs
+arg_steps = tf.app.flags.FLAGS.steps
 
 # network parameters
 mnist = input_data.read_data_sets("MNIST_data/", one_hot=True)
@@ -90,14 +90,14 @@ sess = tf.Session()
 init = tf.global_variables_initializer()
 sess.run(init)
 
-for i in range(arg_epochs):
+for i in range(arg_steps):
     batch_x, batch_y = mnist.train.next_batch(batch_size)
     feed_dict = {x: batch_x, y: batch_y, dropout_prob: 0.5}
     sess.run(train, feed_dict=feed_dict)
-    if i % 1000 == 0:
+    if i % 100 == 0:
         feed_dict = {x: batch_x, y: batch_y, dropout_prob: 0.5}
         train_acc = sess.run(accuracy, feed_dict=feed_dict)
-        print("step %d/%d, training accuracy %g" % (i, arg_epochs, train_acc))
+        print("step %d/%d, training accuracy %g" % (i, arg_steps, train_acc))
 # print final accuracy on test images
 feed_dict = {x: mnist.test.images, y: mnist.test.labels, dropout_prob: 1.0}
 print (sess.run(accuracy, feed_dict=feed_dict))
