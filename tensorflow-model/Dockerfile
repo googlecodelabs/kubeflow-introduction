@@ -1,40 +1,8 @@
-FROM ubuntu:16.04
+FROM tensorflow/tensorflow:1.8.0-rc0
 MAINTAINER "Daniel Sanche"
 
-# add TF dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends \
-        build-essential \
-        curl \
-        libfreetype6-dev \
-        libpng12-dev \
-        libzmq3-dev \
-        pkg-config \
-        python \
-        python-dev \
-        rsync \
-        software-properties-common \
-        unzip \
-        && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
-
-# add python dependencies
-RUN curl -O https://bootstrap.pypa.io/get-pip.py && \
-    python get-pip.py && \
-    rm get-pip.py
-
+# add google cloud storage
 RUN pip --no-cache-dir install \
-        Pillow \
-        h5py \
-        ipykernel \
-        jupyter \
-        matplotlib \
-        numpy \
-        pandas \
-        scipy \
-        sklearn \
-        tensorflow \
-        pudb \
         google-cloud-storage \
         && \
     python -m ipykernel.kernelspec
