@@ -1,4 +1,4 @@
-FROM tensorflow/tensorflow:1.8.0-rc0
+FROM tensorflow/tensorflow:1.10.0
 MAINTAINER "Daniel Sanche"
 
 # add google cloud storage
